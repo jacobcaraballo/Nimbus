@@ -23,7 +23,7 @@ public class TinyListItem: UIStackView {
 	
 	// MARK: - Init
 	
-	init(_ theme: Theming = Theme.ListItem.regular) {
+	public init(_ theme: Theming = Theme.ListItem.regular) {
 		self.theme = theme
 		super.init(frame: .zero)
 		
@@ -33,7 +33,7 @@ public class TinyListItem: UIStackView {
 		setup()
 	}
 	
-	convenience init(from listItem: ListItem) {
+	convenience public init(from listItem: ListItem) {
 		self.init()
 		
 		self.title = [
@@ -208,7 +208,7 @@ struct TinyListItem_Previews: PreviewProvider {
 		let item = TinyListItem()
 		item.title = Lorem.word
 		item.subtitle = Lorem.word
-//		item.icon = .building
+		item.icon = .building
 		item.onAction = {
 			item.title = Lorem.word
 			item.subtitle = Lorem.word

@@ -7,6 +7,9 @@ import Foundation
 
 extension Numeric {
 	
+	/// Value of 2.
+	public static var xxSmall: Self { 2 }
+	
 	/// Value of 4.
 	public static var xSmall: Self { 4 }
 	

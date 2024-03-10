@@ -73,7 +73,7 @@ extension NestedStackView {
 	enum ItemOption: Hashable {
 		static var `default`: Set<Self> = [
 			.spacing(4),
-			.distribution(.fillProportionally),
+			.distribution(.fill),
 			.alignment(.fill)
 		]
 		

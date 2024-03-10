@@ -25,7 +25,7 @@ public class TabListItem: UIStackView {
 	
 	// MARK: - Init
 	
-	init(_ theme: Theming = Theme.ListItem.regular) {
+	public init(_ theme: Theming = Theme.ListItem.regular) {
 		self.theme = theme
 		super.init(frame: .zero)
 		

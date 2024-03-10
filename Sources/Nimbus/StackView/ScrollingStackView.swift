@@ -30,8 +30,6 @@ public class ScrollingStackView: UIScrollView {
 		self.showsVerticalScrollIndicator = false
 		self.stackView.axis = axis
 		self.stackView.addArrangedSubviews(arrangedSubviews)
-		self.setContentCompressionResistancePriority(.required, for: .vertical)
-		self.setContentCompressionResistancePriority(.required, for: .horizontal)
 		
 		setupKeyboardConfiguration()
 		setupContent()
@@ -72,8 +70,6 @@ public class ScrollingStackView: UIScrollView {
 	private lazy var stackView: UIStackView = {
 		let stackView = UIStackView()
 		stackView.axis = .vertical
-		stackView.distribution = .fillProportionally
-		stackView.alignment = .fill
 		stackView.spacing = spacing
 		stackView.setContentCompressionResistancePriority(.required, for: .vertical)
 		stackView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -137,7 +133,10 @@ extension ScrollingStackView {
 				self.stackView.superview?.layoutIfNeeded()
 			}
 		}
-		
+	}
+	
+	public func updateForLayoutChange() {
+		self.stackView.superview?.layoutIfNeeded()
 	}
 	
 	public func insertArrangedSubview(_ view: UIView, at index: Int) {
@@ -156,6 +155,16 @@ extension ScrollingStackView {
 		stackView.addController(controller, in: parent)
 	}
 	
+	public func addArrangedControllers(_ controllers: [UIViewController], in parent: UIViewController) {
+		controllers.forEach {
+			addArrangedController($0, in: parent)
+		}
+	}
+	
+	public func removeArrangedSubviews() {
+		stackView.removeArrangedSubviews()
+	}
+	
 	public var arrangedSubviews: [UIView] {
 		stackView.arrangedSubviews
 	}
@@ -165,7 +174,7 @@ extension ScrollingStackView {
 import SwiftUI
 import UIKitPreviews
 import LoremSwiftum
-struct ScrollingStackView_Previews: PreviewProvider {
+struct ScrollingStackView_Previews {
 	static var previews: some View {
 		UIKitPreviews { viewController }
 	}
@@ -173,8 +182,8 @@ struct ScrollingStackView_Previews: PreviewProvider {
 	static var viewController: UIViewController = {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .systemGroupedBackground
-		vc.view.addSubview(horizontalScrollingStack)
-		horizontalScrollingStack.constrain(.edges, to: .superview)
+		vc.view.addSubview(verticalScrollingStack)
+		verticalScrollingStack.constrain(.edges, to: .superview)
 		return vc
 	}()
 	
@@ -183,9 +192,19 @@ struct ScrollingStackView_Previews: PreviewProvider {
 		let listItems: [ListItem] = (1...10).map { _ in
 			listItem2
 		}
-		view.addArrangedSubviews(listItems)
+		view.addArrangedSubviews(collapsingStackViews)
 		return view
 	}()
+	
+	static var collapsingStackViews: [CollapsingStackView] = (1...10).map { i in
+		let stackView = CollapsingStackView(title: "StackView \(i)", subtitle: "", items: (1...10).map { _ in
+			listItem2
+		})
+		stackView.onStateChange = { _ in
+			Self.verticalScrollingStack.updateForLayoutChange()
+		}
+		return stackView
+	}
 	
 	static var horizontalScrollingStack: UIView = {
 		let view = TabList(items: [
@@ -222,13 +241,13 @@ struct ScrollingStackView_Previews: PreviewProvider {
 		return view
 	}()
 	
-	static var listItem: TabListItem {
-		let item = TabListItem()
-		item.title = Lorem.word
-		item.subtitle = Lorem.word
+	static var listItem: Button {
+		let item = Button()
+		item.setTitle(Lorem.word, for: .normal)
+		item.setSubtitle(Lorem.word)
 		item.onAction = {
-			item.title = Lorem.word
-			item.subtitle = Lorem.word
+			item.setTitle(Lorem.word, for: .normal)
+			item.setSubtitle(Lorem.word)
 		}
 		return item
 	}
@@ -254,3 +273,5 @@ struct ScrollingStackView_Previews: PreviewProvider {
 	}
 	
 }
+
+//fileprivate ScrollingStackViewTestController

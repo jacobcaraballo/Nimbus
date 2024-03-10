@@ -36,6 +36,12 @@ public enum ThemingOptions {
 	
 	case text(font: UIFont, color: UIColor)
 	
+	case buttonConfiguration(_ config: UIButton.Configuration)
+	
+	case layoutMargins(_ layoutMargins: UIEdgeInsets)
+	
+	case textAlignment(_ alignment: NSTextAlignment)
+	
 }
 
 extension ThemingOptions {
@@ -62,6 +68,28 @@ extension ThemingOptions {
 			guard let label = view as? UILabel else { break }
 			label.font = font
 			label.textColor = color
+			
+		case let .buttonConfiguration(config):
+			guard let button = view as? UIButton else { break }
+			button.configuration = config
+			
+		case let .layoutMargins(layoutMargins):
+			guard let stackView = view as? UIStackView else { break }
+			stackView.layoutMargins = layoutMargins
+			stackView.isLayoutMarginsRelativeArrangement = true
+			
+		case let .textAlignment(alignment):
+			if let textLabel = view as? UILabel {
+				textLabel.textAlignment = alignment
+			} else if let stackView = view as? UIStackView {
+				stackView.arrangedSubviews.forEach { subview in
+					self.apply(to: subview)
+				}
+			} else {
+				view.subviews.forEach { subview in
+					self.apply(to: subview)
+				}
+			}
 			
 		}
 		

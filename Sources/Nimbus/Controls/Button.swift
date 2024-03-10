@@ -8,11 +8,26 @@ import UIKit
 
 public class Button: UIButton {
 	
+	public typealias OnAction = () -> Void
+	
+	public var isToggle: Bool = false
+	
+	public var onAction: OnAction?
+	
 	public init(_ style: Theme.Button = .regular) {
 		super.init(frame: .zero)
+		
 		style.apply(to: self)
 		setup()
 		setupConfiguration()
+		
+		self.addAction(.init(handler: { [unowned self] _ in
+			self.onAction?()
+			
+			if isToggle {
+				self.isSelected.toggle()
+			}
+		}), for: .touchUpInside)
 	}
 	
 	required init?(coder: NSCoder) {
@@ -20,6 +35,7 @@ public class Button: UIButton {
 	}
 	
 	public func setupConfiguration() {
+		guard self.configuration == nil else { return }
 		self.configuration = .tinted()
 		self.configuration?.contentInsets = .init(horizontal: .large, vertical: .regular)
 		self.configuration?.imagePadding = .regular

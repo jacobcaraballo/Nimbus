@@ -9,13 +9,13 @@ import Combine
 
 public class TabList: UIView {
 	
-	public typealias OnAction = (_ tab: TabListItem) -> Void
+	public typealias OnAction = (_ tab: Button) -> Void
 	
 	public var onAction: OnAction?
 	
 	// MARK: - Init
 	
-	init(items: [TabListItem] = []) {
+	public init(items: [Button] = []) {
 		self.items = items
 		super.init(frame: .zero)
 		
@@ -44,10 +44,10 @@ public class TabList: UIView {
 		return stackView
 	}()
 	
-	public var activeTab: TabListItem {
-		guard let activeItem = items.first(where: \.isActive) else {
+	public var activeTab: Button {
+		guard let activeItem = items.first(where: \.isSelected) else {
 			let firstItem = items.first!
-			firstItem.isActive = true
+			firstItem.isSelected = true
 			return firstItem
 		}
 		
@@ -56,10 +56,11 @@ public class TabList: UIView {
 	
 	private lazy var indicator: Indicator = {
 		let indicator = Indicator(.horizontal, style: .regular, color: .systemMint)
+		indicator.isHidden = true
 		return indicator
 	}()
 	
-	private var items: [TabListItem]
+	private var items: [Button]
 	
 	private var indicatorConstraints = Set<NSLayoutConstraint>()
 	
@@ -74,7 +75,12 @@ public class TabList: UIView {
 		}
 	}
 	
-	private var queuedActiveItem: TabListItem?
+	private var queuedActiveItem: Button?
+	
+	public var showsSelectionIndicator: Bool {
+		set { indicator.isHidden = !newValue }
+		get { !indicator.isHidden }
+	}
 	
 }
 
@@ -119,7 +125,7 @@ extension TabList {
 		}
 	}
 	
-	private func didSelectItem(_ item: TabListItem) {
+	private func didSelectItem(_ item: Button) {
 		onAction?(item)
 		setActiveItem(item, animated: true)
 	}
@@ -128,14 +134,14 @@ extension TabList {
 		setActiveItem(items[index], animated: animated)
 	}
 	
-	public func setActiveItem(_ item: TabListItem, animated: Bool) {
+	public func setActiveItem(_ item: Button, animated: Bool) {
 		guard isReadyForScrolling else {
 			queuedActiveItem = item
 			return
 		}
 		
-		items.filter(\.isActive).forEach { $0.isActive = false }
-		item.isActive = true
+		items.filter(\.isSelected).forEach { $0.isSelected = false }
+		item.isSelected = true
 		moveIndicatorToActiveItem(animated: animated)
 		stackView.scrollTo(item, position: .offset(.left, .xxLarge), animated: animated)
 	}
@@ -218,9 +224,9 @@ struct TabList_Previews: PreviewProvider {
 		return view
 	}()
 	
-	static var listItem: TabListItem {
-		let item = TabListItem()
-		item.title = Lorem.word
+	static var listItem: Button {
+		let item = Button()
+		item.setTitle(Lorem.word, for: .normal)
 //		item.subtitle = Lorem.word
 		//		item.icon = .building
 //		item.onAction = {

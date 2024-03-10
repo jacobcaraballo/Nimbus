@@ -27,12 +27,14 @@ public class ListItem: UIStackView {
 	
 	// MARK: - Init
 	
-	init(_ theme: Theming = Theme.ListItem.regular) {
+	public init(_ theme: Theming = Theme.ListItem.regular) {
 		self.theme = theme
 		
 		super.init(frame: .zero)
 		
 		self.layoutMargins = .init(all: .large)
+		self.distribution = .fill
+		self.alignment = .fill
 		self.isLayoutMarginsRelativeArrangement = true
 		
 		setup()
@@ -43,11 +45,6 @@ public class ListItem: UIStackView {
 	}
 	
 	// MARK: - Properties
-	
-	private lazy var mainStackView: UIStackView = {
-		let stackView = UIStackView()
-		return stackView
-	}()
 	
 	private lazy var nestedStackView: NestedStackView = {
 		let stackView = NestedStackView(
@@ -66,7 +63,7 @@ public class ListItem: UIStackView {
 					controlContainer,
 					rightIconImageView
 				], options: [
-					.alignment(.center),
+					.alignment(.fill),
 					.spacing(.small)
 				]),
 				divider,
@@ -103,12 +100,14 @@ public class ListItem: UIStackView {
 	private lazy var controlContainer: UIStackView = {
 		let container = UIStackView()
 		container.axis = .horizontal
+		container.isHidden = true
 		return container
 	}()
 	
 	private var controlView: Control? {
 		didSet {
 			guard let controlView else { return }
+			controlContainer.removeArrangedSubviews()
 			controlContainer.addArrangedSubview(controlView)
 		}
 	}
@@ -121,7 +120,7 @@ public class ListItem: UIStackView {
 		return imageView
 	}()
 	
-	private lazy var topLeftLabel: UILabel = {
+	public lazy var topLeftLabel: UILabel = {
 		let label = UILabel()
 		label.isHidden = true
 		label.font = .appFont(.headline)
@@ -131,7 +130,7 @@ public class ListItem: UIStackView {
 		return label
 	}()
 	
-	private lazy var topRightLabel: UILabel = {
+	public lazy var topRightLabel: UILabel = {
 		let label = UILabel()
 		label.isHidden = true
 		label.font = .appFont(.headline)
@@ -142,18 +141,19 @@ public class ListItem: UIStackView {
 		return label
 	}()
 	
-	private lazy var bottomLeftLabel: UILabel = {
+	public lazy var bottomLeftLabel: UILabel = {
 		let label = UILabel()
 		label.isHidden = true
 		label.font = .appFont(.subheadline, weight: .light)
 		label.textColor = .secondaryLabel
+		label.textAlignment = .right
 		
 		label.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
 		
 		return label
 	}()
 	
-	private lazy var bottomRightLabel: UILabel = {
+	public lazy var bottomRightLabel: UILabel = {
 		let label = UILabel()
 		label.isHidden = true
 		label.font = .appFont(.subheadline, weight: .light)
@@ -164,7 +164,7 @@ public class ListItem: UIStackView {
 		return label
 	}()
 	
-	private lazy var bottomTextLabel: UILabel = {
+	public lazy var bottomTextLabel: UILabel = {
 		let label = UILabel()
 		label.isHidden = true
 		label.numberOfLines = 0

@@ -13,6 +13,9 @@ extension Theme {
 	public enum Button {
 		case regular
 		case destructive
+		case text
+		case outline
+		case regularMini
 		case cancel
 	}
 	
@@ -36,6 +39,7 @@ extension Theme {
 	
 	public enum ListItem {
 		case regular
+		case mini
 	}
 	
 	public enum HighlightedBackground {
@@ -53,9 +57,53 @@ extension Theme.Button: Theming {
 	public var options: [ThemingOptions] {
 		switch self {
 		case .regular:
+			var config: UIButton.Configuration = .tinted()
+			config.contentInsets = .init(horizontal: .large, vertical: .regular)
+			config.imagePadding = .regular
+			config.preferredSymbolConfigurationForImage = .init(pointSize: .xxLarge)
+			config.baseBackgroundColor = .systemMint
+			
 			return [
 				.corners(.large),
-				.tintColor(.systemMint)
+				.tintColor(.systemMint),
+				.buttonConfiguration(config)
+			]
+			
+		case .regularMini:
+			var config: UIButton.Configuration = .tinted()
+			config.contentInsets = .init(horizontal: .small, vertical: .xSmall)
+			config.imagePadding = .regular
+			config.preferredSymbolConfigurationForImage = .init(pointSize: .xxLarge)
+			config.baseBackgroundColor = .systemMint
+			config.buttonSize = .mini
+			config.cornerStyle = .large
+			
+			return [
+				.tintColor(.systemMint),
+				.buttonConfiguration(config)
+			]
+			
+		case .text:
+			var config: UIButton.Configuration = .bordered()
+			config.contentInsets = .init(horizontal: .large, vertical: .regular)
+			config.imagePadding = .regular
+			config.preferredSymbolConfigurationForImage = .init(pointSize: .xxLarge)
+			config.baseBackgroundColor = .clear
+			
+			return Self.regular.options + [
+				.buttonConfiguration(config)
+			]
+			
+		case .outline:
+			var config: UIButton.Configuration = .bordered()
+			config.contentInsets = .init(horizontal: .large, vertical: .regular)
+			config.imagePadding = .regular
+			config.preferredSymbolConfigurationForImage = .init(pointSize: .xxLarge)
+			config.baseBackgroundColor = .clear
+			
+			return Self.regular.options + [
+				.buttonConfiguration(config),
+				.border(.regular, color: .systemMint)
 			]
 			
 		case .destructive:

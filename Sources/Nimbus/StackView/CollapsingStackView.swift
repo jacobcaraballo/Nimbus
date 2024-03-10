@@ -6,9 +6,13 @@
 import Foundation
 import UIKit
 
-class CollapsingStackView: UIView {
+public class CollapsingStackView: UIView {
 	
-	init(title: String, subtitle: String, items: [ListItem]) {
+	public typealias OnStateChange = (_ isHidden: Bool) -> Void
+	
+	public var onStateChange: OnStateChange?
+	
+	public init(title: String, subtitle: String, items: [ListItem]) {
 		super.init(frame: .zero)
 		
 		self.titleLabel.text = title
@@ -53,7 +57,7 @@ class CollapsingStackView: UIView {
 		stackView.spacing = .regular
 		stackView.axis = .horizontal
 		stackView.distribution = .fill
-		stackView.alignment = .bottom
+		stackView.alignment = .firstBaseline
 		
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
 		stackView.addGestureRecognizer(gesture)
@@ -101,6 +105,7 @@ class CollapsingStackView: UIView {
 		let label = UILabel()
 		label.font = .appFont(.subheadline)
 		label.textColor = Colors.secondaryLabel
+		label.textAlignment = .right
 		return label
 	}()
 	
@@ -170,6 +175,8 @@ extension CollapsingStackView {
 	}
 	
 	public func setIsHidden(_ isHidden: Bool, animated: Bool = true) {
+		defer { onStateChange?(isHidden) }
+		
 		guard animated else {
 			self.contentStackView.alpha = isHidden ? 0 : 1
 			self.contentStackView.isHidden = isHidden
