@@ -7,6 +7,14 @@ import Foundation
 import UIKit
 
 extension UIEdgeInsets {
+	public var vertical: CGFloat {
+		return top
+	}
+	
+	public var horizontal: CGFloat {
+		return left
+	}
+	
 	public init(from insets: NSDirectionalEdgeInsets) {
 		self.init(top: insets.top, left: insets.leading, bottom: insets.bottom, right: insets.trailing)
 	}
@@ -25,6 +33,14 @@ extension UIEdgeInsets {
 	
 	public init(vertical: CGFloat) {
 		self.init(top: vertical, left: 0, bottom: vertical, right: 0)
+	}
+	
+	public init(horizontal: CGFloat, top: CGFloat, bottom: CGFloat) {
+		self.init(top: top, left: horizontal, bottom: bottom, right: horizontal)
+	}
+	
+	public init(vertical: CGFloat, left: CGFloat, right: CGFloat) {
+		self.init(top: vertical, left: left, bottom: vertical, right: right)
 	}
 }
 
